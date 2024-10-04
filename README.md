@@ -1,6 +1,6 @@
 # STAT471
 
-To execute the jupyter notebook
+To execute the jupyter notebook file `Lab1\Exercise\lab.ipynb`
 
 ```shell
 # create a virtual conda environment
