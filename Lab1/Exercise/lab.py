@@ -38,9 +38,9 @@ def median_vs_mean(nums):
     sorted_num = sorted(nums)
     mean = sum(sorted_num) / len(sorted_num)
     if len(sorted_num) % 2 == 0:
-        return mean == (sorted_num[len(sorted_num) // 2] + sorted_num[len(sorted_num) // 2 - 1]) / 2
+        return mean >= (sorted_num[len(sorted_num) // 2] + sorted_num[len(sorted_num) // 2 - 1]) / 2
     else:
-        return mean == sorted_num[len(sorted_num) // 2]
+        return mean >= sorted_num[len(sorted_num) // 2]
 
 # ---------------------------------------------------------------------
 # QUESTION 2
