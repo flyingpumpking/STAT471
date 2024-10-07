@@ -120,11 +120,10 @@ def add_root(A):
 
 def where_square(A):
     """
-    :param A:
+    :param A: a numpy array
     :return: a new `numpy` array of Booleans whose `i`th element is `True` if and only if the `i`th element of `A` is a perfect square
     """
-    ans = np.sqrt(A) % 1 == 0
-    return ans
+    return A == np.sqrt(A).astype(int)**2
 
 # ---------------------------------------------------------------------
 # QUESTION 6
@@ -147,13 +146,9 @@ def with_leftover(A):
     :param A: a numpy array of stock prices
     :return: the day (as an `int`) on which you can buy at least one full share using just "left-over" money
     """
-    leftover = np.full(len(A), 20)
-    num = leftover[0] // A[0]
-    leftover = np.cumsum(leftover - num * A)
-    if np.max(leftover - A) >= 0:
-        return int(np.where(leftover - A >= 0)[0][0])
-    else:
-        return -1
+    leftover = np.cumsum(20 % A)
+    days = np.where(leftover - A >= 0)[0]
+    return int(days[0]) if days.size > 0 else -1
 
 
 # ---------------------------------------------------------------------
@@ -176,16 +171,18 @@ def salary_stats(salary):
     For example, "Billy Triton Jr." and "Tyler Triton" should be considered to have the same last name.
     total_highest: the total salary of the team that has the highest paid player
     """
-    last_names = salary["Player"].str.split(" ").str[1]
+    last_names = salary['Player'].str.extract(r'(\w+)(?:\s+(?:Jr\.|II|III))?$')[0]
+    fifth_lowest_array = salary.sort_values("Salary").iloc[4][["Player", "Team"]].values.tolist()
+    fifth_lowest = ", ".join(fifth_lowest_array)
     data = [
         ["num_players", len(salary)],
         ["num_teams", len(salary["Team"].unique())],
         ["total_salary", salary["Salary"].sum()],
         ["highest_salary", salary["Player"].max()],
         ["avg_los", round(salary[salary["Team"] == "Los Angeles Lakers"]["Salary"].mean(), 2)],
-        ["fifth_lowest", salary.sort_values("Salary").iloc[4][["Player", "Team"]].values],
+        ["fifth_lowest", fifth_lowest],
         ["duplicates", last_names.duplicated().any()],
         ["total_highest", salary[salary["Team"] == salary["Team"].max()]["Salary"].sum()]
     ]
     # use the first column as the index
-    return pd.Series(dict(data))
+    return pd.Series(dict(data), name="Salary Stats")
