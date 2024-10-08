@@ -172,7 +172,7 @@ def salary_stats(salary):
     total_highest: the total salary of the team that has the highest paid player
     """
     last_names = salary['Player'].str.extract(r'(\w+)(?:\s+(?:Jr\.|II|III))?$')[0]
-    if len(salary) > 5:
+    if len(salary) >= 5:
         fifth_lowest_array = salary.sort_values("Salary").iloc[4][["Player", "Team"]].values.tolist()
         fifth_lowest = ", ".join(fifth_lowest_array)
     else:
