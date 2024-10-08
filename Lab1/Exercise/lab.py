@@ -172,17 +172,20 @@ def salary_stats(salary):
     total_highest: the total salary of the team that has the highest paid player
     """
     last_names = salary['Player'].str.extract(r'(\w+)(?:\s+(?:Jr\.|II|III))?$')[0]
-    fifth_lowest_array = salary.sort_values("Salary").iloc[4][["Player", "Team"]].values.tolist()
-    fifth_lowest = ", ".join(fifth_lowest_array)
+    if len(salary) > 5:
+        fifth_lowest_array = salary.sort_values("Salary").iloc[4][["Player", "Team"]].values.tolist()
+        fifth_lowest = ", ".join(fifth_lowest_array)
+    else:
+        fifth_lowest = "Total number of players is less than 5"
     data = [
         ["num_players", len(salary)],
         ["num_teams", len(salary["Team"].unique())],
         ["total_salary", salary["Salary"].sum()],
-        ["highest_salary", salary["Player"].max()],
+        ["highest_salary", salary["Player"][salary["Salary"].idxmax()]],
         ["avg_los", round(salary[salary["Team"] == "Los Angeles Lakers"]["Salary"].mean(), 2)],
         ["fifth_lowest", fifth_lowest],
         ["duplicates", last_names.duplicated().any()],
-        ["total_highest", salary[salary["Team"] == salary["Team"].max()]["Salary"].sum()]
+        ["total_highest", salary[salary["Team"] == salary["Team"][salary["Salary"].idxmax()]]["Salary"].sum()]
     ]
     # use the first column as the index
     return pd.Series(dict(data), name="Salary Stats")
